@@ -18,6 +18,7 @@
   
   <style scoped>
   .sidebar {
+    border:1px solid white;
     display: flex;
     flex-direction: column;
     width: 100px;

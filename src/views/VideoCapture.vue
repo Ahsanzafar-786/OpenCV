@@ -1,18 +1,26 @@
 <template>
-  
-  <div class="video-capture">
-  
-    <video ref="videoElement" autoplay class="video-element"></video>
-    <canvas ref="canvasElement" style="display:none;"></canvas>
-    <div class="control-buttons">
-      <button @click="startVideo">Start</button>
-      <button @click="stopVideo">Stop</button>
-      <button @click="captureImage">Capture</button>
+ <div class="video-capture-container">
+  <div class="video-capture-header">
+    <h1 style="margin: 0;text-align: left;">Video Capture</h1>
+  </div>
+  <div class="video-capture-content">
+    <div class="video-capture">
+      <video ref="videoElement" autoplay class="video-element"></video>
+      <canvas ref="canvasElement" style="display:none;"></canvas>
+    </div>
+    <div class="control-buttons-container">
+      <div class="control-buttons">
+        <button @click="startVideo">Start</button>
+        <button @click="stopVideo">Stop</button>
+        <button @click="captureImage">Capture</button>
+      </div>
     </div>
   </div>
-  <div style="border: 1px solid white;">
-    <h1 style="text-align: center;color:white;">Video Capture</h1>
-  </div>
+  <div class="Video-display-footer">
+     Video
+    </div>
+</div>
+
 </template>
 
 <script>
@@ -66,41 +74,77 @@ export default {
 </script>
 
 <style scoped>
-.video-capture {
+.video-capture-container {
   display: flex;
-  height: 500px;
-  position: relative; /* Establishes a positioning context for absolute children */
-  background-color: #1e1e1e;
+  
+  flex-direction: column;
+  height: 100vh;
+  background-color: #1e1e1e; /* Background color of the video capture area */
+}
+
+.video-capture-header {
+  border:1px solid white;
+  background-color: #333;
   color: white;
-  padding: 20px;
-  overflow: hidden; /* Prevents scrollbars */
+  padding: 5px 5px 5px 25px;
+  text-align: center;
+}
+
+.video-capture-content {
+  display: flex;
+  flex: 1; /* This makes sure the content section takes up the remaining height */
+}
+
+.video-capture {
+  flex: 1; /* Take up all available space on the left */
+  position: relative;
 }
 
 .video-element {
-  max-width: 100%;
-  height: 80%; /* Ensures the video does not exceed the container width */
-  aspect-ratio: 16 / 9; /* Maintains video aspect ratio */
+  width: 100%;
+  height: 100vh;
+  object-fit: cover; /* Ensures the video covers the area, potentially cropping if aspect ratio differs */
+}
+
+.control-buttons-container {
+  border:1px solid white;
+  width: 80px; /* Set a fixed width for the control buttons area */
+  background-color: #333; /* Background color for the control buttons area */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .control-buttons {
-  position: fixed; /* Fixed position relative to the viewport */
-  right: 20px; /* Positioned 20px from the right edge of the viewport */
-  top: 50%; /* Positioned at the center vertically */
-  transform: translateY(-50%); /* Centers the buttons vertically */
   display: flex;
   flex-direction: column;
+  justify-content: center; /* Center the buttons vertically */
 }
 
 button {
-  margin: 10px 0;
+  margin: 5px 0;
   padding: 10px;
   background-color: #444;
   color: white;
   border: none;
   cursor: pointer;
 }
+.Video-display-footer {
+  border:1px solid white;
+  text-align: center;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  background-color: #333;
+  width: 100%;
+  height: 50px;
+  color: white;
+ 
+  text-align: center;
+}
 
 button:hover {
   background-color: #666;
 }
 </style>
+

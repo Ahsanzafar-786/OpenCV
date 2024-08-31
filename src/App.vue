@@ -40,7 +40,7 @@ sidebar {
 
 /* Adjust the main content area */
 .content {        /* Offset by the width of the sidebar */
-  width: 90%;               /* Remaining width */
+  width: 100vw;               /* Remaining width */
   height: 100%;             /* Scrollable content */
 }
 </style>
