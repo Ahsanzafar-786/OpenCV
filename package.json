@@ -1,6 +1,9 @@
 {
-  "name": "my-electron-vue-app",
+  "name": "Electron-App",
   "version": "0.1.0",
+  "description": "A description of your Electron Vue app",
+  "author": "Cahsan986@gamil.com",
+  "main": "background.js",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -11,12 +14,12 @@
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
   },
-  "main": "background.js",
   "dependencies": {
     "core-js": "^3.8.3",
     "opencv.js": "^1.2.1",
     "vue": "^3.2.13",
-    "vue-router": "^4.0.13"
+    "vue-router": "^4.0.13",
+    "vuex": "^4.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

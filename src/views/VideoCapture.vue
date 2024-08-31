@@ -1,64 +1,66 @@
-<!-- src/views/VideoCapture.vue -->
 <template>
+  
   <div class="video-capture">
-    <div class="sidebar">
-      <button @click="navigateTo('video')">Video</button>
-      <button @click="navigateTo('image')">Image</button>
+  
+    <video ref="videoElement" autoplay class="video-element"></video>
+    <canvas ref="canvasElement" style="display:none;"></canvas>
+    <div class="control-buttons">
+      <button @click="startVideo">Start</button>
+      <button @click="stopVideo">Stop</button>
+      <button @click="captureImage">Capture</button>
     </div>
-    <div class="content">
-      <video ref="videoElement" width="640" height="480" autoplay></video>
-      <div class="buttons">
-        <button @click="startVideo">Start</button>
-        <button @click="stopVideo">Stop</button>
-        <button @click="captureImage">Capture</button>
-      </div>
-    </div>
+  </div>
+  <div style="border: 1px solid white;">
+    <h1 style="text-align: center;color:white;">Video Capture</h1>
   </div>
 </template>
 
 <script>
 export default {
-  name: "VideoCapture",
+  data() {
+    return {
+      videoStream: null,
+    };
+  },
   methods: {
-    navigateTo(page) {
-      this.$router.push({ name: page });
-    },
-    startVideo() {
-      navigator.mediaDevices
-        .getUserMedia({ video: true })
-        .then((stream) => {
-          this.$refs.videoElement.srcObject = stream;
-          this.stream = stream;
-        })
-        .catch((error) => {
-          console.error("Error accessing webcam: ", error);
-        });
+    async startVideo() {
+      try {
+        this.videoStream = await navigator.mediaDevices.getUserMedia({ video: true });
+        this.$refs.videoElement.srcObject = this.videoStream;
+      } catch (error) {
+        console.error("Error accessing webcam: ", error);
+      }
     },
     stopVideo() {
-      if (this.stream) {
-        this.stream.getTracks().forEach((track) => track.stop());
+      if (this.videoStream) {
+        this.videoStream.getTracks().forEach(track => track.stop());
+        this.videoStream = null;
       }
     },
     captureImage() {
+      const canvas = this.$refs.canvasElement;
+      const context = canvas.getContext('2d');
       const video = this.$refs.videoElement;
-      const canvas = document.createElement("canvas");
+
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
-      const context = canvas.getContext("2d");
       context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-      canvas.toBlob((blob) => {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `capture_${Date.now()}.png`;
-        a.click();
-        URL.revokeObjectURL(url);
-      });
+      const imageDataUrl = canvas.toDataURL('image/png');
+      this.saveImage(imageDataUrl);
     },
-  },
-  beforeUnmount() {
-    this.stopVideo();
+    saveImage(imageDataUrl) {
+      // Dispatch action to add image to Vuex store
+      this.$store.dispatch('addImage', imageDataUrl);
+
+      // Optionally download the image
+      const link = document.createElement('a');
+      link.href = imageDataUrl;
+      link.download = 'captured.png';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    },
   },
 };
 </script>
@@ -66,43 +68,39 @@ export default {
 <style scoped>
 .video-capture {
   display: flex;
-  height: 100%;
-  background-color: #121212;
+  height: 500px;
+  position: relative; /* Establishes a positioning context for absolute children */
+  background-color: #1e1e1e;
+  color: white;
+  padding: 20px;
+  overflow: hidden; /* Prevents scrollbars */
 }
 
-.sidebar {
-  width: 100px;
+.video-element {
+  max-width: 100%;
+  height: 80%; /* Ensures the video does not exceed the container width */
+  aspect-ratio: 16 / 9; /* Maintains video aspect ratio */
+}
+
+.control-buttons {
+  position: fixed; /* Fixed position relative to the viewport */
+  right: 20px; /* Positioned 20px from the right edge of the viewport */
+  top: 50%; /* Positioned at the center vertically */
+  transform: translateY(-50%); /* Centers the buttons vertically */
   display: flex;
   flex-direction: column;
 }
 
-.sidebar button {
-  margin: 10px;
+button {
+  margin: 10px 0;
   padding: 10px;
-  background-color: #333;
-  color: #fff;
+  background-color: #444;
+  color: white;
   border: none;
   cursor: pointer;
 }
 
-.content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.buttons {
-  margin-top: 20px;
-}
-
-.buttons button {
-  margin: 5px;
-  padding: 10px;
-  background-color: #555;
-  color: #fff;
-  border: none;
-  cursor: pointer;
+button:hover {
+  background-color: #666;
 }
 </style>

@@ -5,7 +5,7 @@ import ImageDisplay from '../views/ImageDisplay.vue';
 
 const routes = [
   {
-    path: '/video',
+    path: '/',
     name: 'video',
     component: VideoCapture,
   },
@@ -13,11 +13,8 @@ const routes = [
     path: '/image',
     name: 'image',
     component: ImageDisplay,
-  },
-  {
-    path: '/',
-    redirect: '/video'
   }
+
 ];
 
 const router = createRouter({
